@@ -1,9 +1,5 @@
-package com.steamulo.gestiontpe.network.manager
+package com.baudoin.sofascore
 
-import android.content.res.Resources
-import com.steamulo.gestiontpe.CallBackManager
-import com.steamulo.gestiontpe.CallBackManagerWithError
-import com.steamulo.gestiontpe.R
 import retrofit2.Call
 import retrofit2.Response
 
@@ -18,7 +14,7 @@ open class BaseNetworkManager {
         val responseData = pResponse.body()
 
         if(responseData == null){
-            pCallBack.onError(Resources.getSystem().getString(R.string.error_response_null))
+            pCallBack.onError("Error")
             return null
         }
         return responseData
@@ -33,7 +29,7 @@ open class BaseNetworkManager {
         val responseData = pResponse.body()
 
         if(responseData == null){
-            pCallBack.onResponse(Resources.getSystem().getString(R.string.error_response_null))
+            pCallBack.onResponse("Error")
             return null
         }
         return responseData
