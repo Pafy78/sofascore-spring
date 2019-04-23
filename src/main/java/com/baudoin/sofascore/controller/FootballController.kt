@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 
-@RequestMapping("/api")
+@RequestMapping("/football")
 @RestController
 class FootballController {
 
@@ -17,7 +17,7 @@ class FootballController {
         HttpUtils.setNetworkManagerInterfaces()
         FootballNetworkManager.getEvents("2019-04-22", object: CallBackManagerWithError<EventsResponse> {
             override fun onSuccess(response: EventsResponse) {
-                println(response.sportItem.sport.toString())
+                println(response.sportItem.toString())
             }
 
             override fun onError(pError: String) {

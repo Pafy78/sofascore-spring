@@ -4,6 +4,6 @@ import com.google.gson.JsonObject
 
 class SportItem {
 
-    lateinit var sport: JsonObject
-    lateinit var tournaments: MutableList<Tournament>
+    lateinit var sport: Sport
+    lateinit var tournaments: List<Tournament>
 }
