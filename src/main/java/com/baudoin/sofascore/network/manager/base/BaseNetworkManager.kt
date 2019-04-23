@@ -1,4 +1,4 @@
-package com.baudoin.sofascore
+package com.baudoin.sofascore.network.manager.base
 
 import retrofit2.Call
 import retrofit2.Response

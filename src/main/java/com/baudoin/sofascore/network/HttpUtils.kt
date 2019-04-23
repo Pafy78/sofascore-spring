@@ -1,5 +1,6 @@
-package com.baudoin.sofascore
+package com.baudoin.sofascore.network
 
+import com.baudoin.sofascore.network.manager.FootballNetworkManagerInterface
 import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -13,11 +14,11 @@ object HttpUtils {
     lateinit var footballNetworkManager: FootballNetworkManagerInterface
 
     var retrofit = Retrofit.Builder()
-        .baseUrl(this.PATH_API)
+        .baseUrl(PATH_API)
         .addConverterFactory(GsonConverterFactory.create(gson))
         .build()
 
     fun setNetworkManagerInterfaces(){
-        this.footballNetworkManager = this.retrofit.create(FootballNetworkManagerInterface::class.java)
+        footballNetworkManager = retrofit.create(FootballNetworkManagerInterface::class.java)
     }
 }
