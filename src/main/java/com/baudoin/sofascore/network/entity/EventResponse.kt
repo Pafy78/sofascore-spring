@@ -2,7 +2,7 @@ package com.baudoin.sofascore.network.entity
 
 import com.google.gson.JsonObject
 
-class Event {
+class EventResponse {
     lateinit var sport: Sport
     lateinit var homeTeam: Team
     lateinit var awayTeam: Team

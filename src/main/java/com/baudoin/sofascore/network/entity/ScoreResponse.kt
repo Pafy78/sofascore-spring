@@ -1,6 +1,6 @@
 package com.baudoin.sofascore.network.entity
 
-class Score {
+class ScoreResponse {
     val current: Int? = null
     val display: Int? = null
     val period1: Int? = null
