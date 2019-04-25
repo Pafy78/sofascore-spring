@@ -5,5 +5,5 @@ import com.google.gson.JsonObject
 class TournamentResponse {
 
     lateinit var tournament: JsonObject
-    lateinit var events: List<Event>
+    lateinit var events: List<EventResponse>
 }

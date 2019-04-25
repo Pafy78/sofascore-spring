@@ -2,5 +2,5 @@ package com.baudoin.sofascore.network.entity
 
 class EventsResponse {
 
-    lateinit var sportItem: SportItem
+    lateinit var sportItem: SportItemResponse
 }
