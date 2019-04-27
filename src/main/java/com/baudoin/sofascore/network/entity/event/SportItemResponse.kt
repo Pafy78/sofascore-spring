@@ -1,6 +1,6 @@
-package com.baudoin.sofascore.network.entity
+package com.baudoin.sofascore.network.entity.event
 
-import com.google.gson.JsonObject
+import com.baudoin.sofascore.network.entity.common.SportResponse
 
 class SportItemResponse {
 

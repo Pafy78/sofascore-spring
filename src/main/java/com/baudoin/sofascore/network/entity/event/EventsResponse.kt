@@ -1,4 +1,4 @@
-package com.baudoin.sofascore.network.entity
+package com.baudoin.sofascore.network.entity.event
 
 class EventsResponse {
 

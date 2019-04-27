@@ -1,6 +1,6 @@
 package com.baudoin.sofascore.network.manager
 
-import com.baudoin.sofascore.network.entity.EventsResponse
+import com.baudoin.sofascore.network.entity.event.EventsResponse
 import com.baudoin.sofascore.network.HttpUtils
 import com.baudoin.sofascore.network.manager.base.BaseNetworkManager
 import com.baudoin.sofascore.network.manager.base.CallBackManagerWithError

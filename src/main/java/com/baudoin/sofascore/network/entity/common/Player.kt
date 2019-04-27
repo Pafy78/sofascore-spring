@@ -1,6 +1,6 @@
-package com.baudoin.sofascore.network.entity
+package com.baudoin.sofascore.network.entity.common
 
-class SportResponse {
+class Player {
 
     val id: Int? = null
     val name: String? = null

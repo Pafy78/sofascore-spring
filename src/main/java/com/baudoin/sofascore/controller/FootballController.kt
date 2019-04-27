@@ -1,7 +1,7 @@
 package com.baudoin.sofascore.controller
 
 import com.baudoin.sofascore.network.HttpUtils
-import com.baudoin.sofascore.network.entity.EventsResponse
+import com.baudoin.sofascore.network.entity.event.EventsResponse
 import com.baudoin.sofascore.network.manager.base.CallBackManagerWithError
 import com.baudoin.sofascore.network.manager.FootballNetworkManager
 import org.springframework.web.bind.annotation.RequestMapping

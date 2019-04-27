@@ -1,6 +1,6 @@
 package com.baudoin.sofascore.network.manager
 
-import com.baudoin.sofascore.network.entity.EventsResponse
+import com.baudoin.sofascore.network.entity.event.EventsResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path

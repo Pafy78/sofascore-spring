@@ -1,4 +1,8 @@
-package com.baudoin.sofascore.network.entity
+package com.baudoin.sofascore.network.entity.event
+
+import com.baudoin.sofascore.network.entity.common.ScoreResponse
+import com.baudoin.sofascore.network.entity.common.SportResponse
+import com.baudoin.sofascore.network.entity.common.TeamResponse
 
 class EventResponse {
     lateinit var sport: SportResponse
