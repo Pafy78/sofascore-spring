@@ -30,10 +30,10 @@ class FootballController {
         return output
     }
 
-    @RequestMapping("/event/date/{date}", method = [RequestMethod.GET])
-    fun eventsDate(@PathVariable("date") date : String): DeferredResult<ResponseEntity<*>> {
+    @RequestMapping("/event/date/{date}/position/{id}", method = [RequestMethod.GET])
+    fun eventsDate(@PathVariable("date") date : String, @PathVariable("id") id : Int): DeferredResult<ResponseEntity<*>> {
         val output = DeferredResult<ResponseEntity<*>>()
-        val day = DayMatch(date)
+        val day = DayMatch(date, id)
         day.getMatchs(object: CallBackManager {
             override fun onResponse(pError: String?) {
                 output.setResult(ResponseEntity.ok(day.displayMatchs()))
