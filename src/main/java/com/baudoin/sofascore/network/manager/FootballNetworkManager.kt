@@ -2,6 +2,8 @@ package com.baudoin.sofascore.network.manager
 
 import com.baudoin.sofascore.network.entity.event.EventsResponse
 import com.baudoin.sofascore.network.HttpUtils
+import com.baudoin.sofascore.network.entity.event.EventDetailsResponse
+import com.baudoin.sofascore.network.entity.event.EventResponse
 import com.baudoin.sofascore.network.entity.lineup.MatchLineupResponse
 import com.baudoin.sofascore.network.entity.player.TransfertResponse
 import com.baudoin.sofascore.network.manager.base.BaseNetworkManager
@@ -26,8 +28,8 @@ object FootballNetworkManager: BaseNetworkManager() {
         })
     }
 
-    fun getEvent(pEventID: String, pCallBack: CallBackManagerWithError<MatchLineupResponse>){
-        HttpUtils.footballNetworkManager.getEvent(pEventID).enqueue(object: Callback<MatchLineupResponse>{
+    fun getEventLineups(pEventID: String, pCallBack: CallBackManagerWithError<MatchLineupResponse>){
+        HttpUtils.footballNetworkManager.getEventLineups(pEventID).enqueue(object: Callback<MatchLineupResponse>{
             override fun onFailure(call: Call<MatchLineupResponse>, t: Throwable) {
                 pCallBack.onError(t.message.toString())
             }
@@ -41,8 +43,23 @@ object FootballNetworkManager: BaseNetworkManager() {
         })
     }
 
+    fun getEvent(pEventID: String, pCallBack: CallBackManagerWithError<EventDetailsResponse>){
+        HttpUtils.footballNetworkManager.getEvent(pEventID).enqueue(object: Callback<EventDetailsResponse>{
+            override fun onFailure(call: Call<EventDetailsResponse>, t: Throwable) {
+                pCallBack.onError(t.message.toString())
+            }
+
+            override fun onResponse(call: Call<EventDetailsResponse>, response: Response<EventDetailsResponse>) {
+                val event = checkOnResponseError(call, response, pCallBack) ?: return
+
+                pCallBack.onSuccess(event)
+            }
+
+        })
+    }
+
     fun getPlayerTransfert(pPlayerID: String, pCallBack: CallBackManagerWithError<TransfertResponse>){
-        HttpUtils.footballNetworkManager.getPlayerTransfert(pPlayerID).enqueue(object: Callback<TransfertResponse>{
+        HttpUtils.footballNetworkManager.getPlayerTransfer(pPlayerID).enqueue(object: Callback<TransfertResponse>{
             override fun onFailure(call: Call<TransfertResponse>, t: Throwable) {
                 pCallBack.onError(t.message.toString())
             }

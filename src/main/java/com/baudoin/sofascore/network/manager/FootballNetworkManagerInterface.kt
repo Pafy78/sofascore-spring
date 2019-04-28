@@ -1,5 +1,7 @@
 package com.baudoin.sofascore.network.manager
 
+import com.baudoin.sofascore.network.entity.event.EventDetailsResponse
+import com.baudoin.sofascore.network.entity.event.EventResponse
 import com.baudoin.sofascore.network.entity.event.EventsResponse
 import com.baudoin.sofascore.network.entity.lineup.MatchLineupResponse
 import com.baudoin.sofascore.network.entity.player.TransfertResponse
@@ -13,8 +15,11 @@ interface FootballNetworkManagerInterface{
     fun getEvents(@Path("date") pDate: String) : Call<EventsResponse>
 
     @GET("/event/{eventID}/lineups/json?_=155638462")
-    fun getEvent(@Path("eventID") pEventID: String) : Call<MatchLineupResponse>
+    fun getEventLineups(@Path("eventID") pEventID: String) : Call<MatchLineupResponse>
+
+    @GET("/event/{eventID}/json?_=155638462")
+    fun getEvent(@Path("eventID") pEventID: String) : Call<EventDetailsResponse>
 
     @GET("/player/{playerID}/transfers/json?_=155638580")
-    fun getPlayerTransfert(@Path("playerID") pPlayerID: String) : Call<TransfertResponse>
+    fun getPlayerTransfer(@Path("playerID") pPlayerID: String) : Call<TransfertResponse>
 }

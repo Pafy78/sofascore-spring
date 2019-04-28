@@ -38,9 +38,7 @@ class FootballController {
         val match = Match(pEventID)
         match.getMatch(object: CallBackManager {
             override fun onResponse(pError: String?) {
-                val avgAwayValue = match.awayTeam.getAvgValuePlayer()
-                val avgHomeValue = match.homeTeam.getAvgValuePlayer()
-                output.setResult(ResponseEntity.ok(avgHomeValue.toString() + " - " + avgAwayValue.toString()))
+                output.setResult(ResponseEntity.ok(match.displayTeamValues()))
             }
 
         })
