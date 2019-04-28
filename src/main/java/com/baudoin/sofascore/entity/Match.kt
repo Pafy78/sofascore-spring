@@ -35,9 +35,10 @@ class Match(val pId: String) {
 
     fun displayTeamValues(): String{
         val totalValue = this.homeTeam.getAvgValuePlayer() + this.awayTeam.getAvgValuePlayer()
-        val percentHome = this.homeTeam.getAvgValuePlayer() * 100 / totalValue
+        val percentHome = (this.homeTeam.getAvgValuePlayer() * 100.0f) / totalValue
+        val percentAway = (this.awayTeam.getAvgValuePlayer() * 100.0f) / totalValue
         val stringHome = "${this.homeTeam.name} : $percentHome %"
-        val stringAway = "${this.awayTeam.name} : ${(100 - percentHome)} %"
+        val stringAway = "${this.awayTeam.name} : $percentAway %"
         return "$stringHome\n$stringAway"
     }
 
