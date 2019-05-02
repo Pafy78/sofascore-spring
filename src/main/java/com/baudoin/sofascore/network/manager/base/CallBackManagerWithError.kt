@@ -1,4 +1,4 @@
-package com.steamulo.gestiontpe
+package com.baudoin.sofascore.network.manager.base
 
 interface CallBackManagerWithError<T> {
     fun onSuccess(response : T)
