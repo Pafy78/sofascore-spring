@@ -1,6 +1,6 @@
 package com.baudoin.sofascore.network.entity.event
 
-class Odd {
+class OddResponse {
 
     val expected: Int? = null
     val decimalValue: Float? = null

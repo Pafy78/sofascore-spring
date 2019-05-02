@@ -24,6 +24,10 @@ class Match(val pId: String) {
                 this@Match.awayTeam.name = response.event.awayTeam.name.toString()
                 this@Match.homeOdd = response.winningOdds?.home?.expected
                 this@Match.awayOdd = response.winningOdds?.away?.expected
+                if(response.event.status.code != 100){
+                    pCallBack.onResponse("No linups")
+                    return
+                }
                 setLineups(object: CallBackManager{
                     override fun onResponse(pError: String?) {
                         pCallBack.onResponse(pError)

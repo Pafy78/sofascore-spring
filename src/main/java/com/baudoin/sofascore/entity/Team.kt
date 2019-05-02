@@ -22,8 +22,7 @@ class Team {
             if(!this.loading){
                 this.loading = true
 
-                val playerLineupResponse = lineup?.lineupsSorted?.get(i)
-                val player = Player(playerLineupResponse?.player)
+                val player = Player(lineup?.lineupsSorted?.get(i)?.player)
                 player.setValue(object : CallBackManager {
                     override fun onResponse(pError: String?) {
                         this@Team.players += player

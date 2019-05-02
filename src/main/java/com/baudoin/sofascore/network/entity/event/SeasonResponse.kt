@@ -1,6 +1,6 @@
 package com.baudoin.sofascore.network.entity.event
 
-class Season {
+class SeasonResponse {
 
     val id: Int? = null
     val name: String? = null

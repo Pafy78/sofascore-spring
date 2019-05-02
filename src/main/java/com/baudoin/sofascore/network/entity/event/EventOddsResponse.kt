@@ -2,6 +2,6 @@ package com.baudoin.sofascore.network.entity.event
 
 class EventOddsResponse {
 
-    var away: Odd? = null
-    var home: Odd? = null
+    var away: OddResponse? = null
+    var home: OddResponse? = null
 }
