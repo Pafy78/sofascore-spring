@@ -2,6 +2,7 @@ package com.baudoin.sofascore.controller
 
 import com.baudoin.sofascore.entity.DayMatch
 import com.baudoin.sofascore.entity.Match
+import com.baudoin.sofascore.entity.PeriodMatch
 import com.baudoin.sofascore.network.HttpUtils
 import com.baudoin.sofascore.network.entity.event.EventsResponse
 import com.baudoin.sofascore.network.entity.lineup.MatchLineupResponse
@@ -41,6 +42,25 @@ class FootballController {
                 }
                 else{
                     output.setResult(ResponseEntity.ok(day.displayMatchs()))
+                }
+
+            }
+
+        })
+        return output
+    }
+
+    @RequestMapping("/event/tournament/{name}/period/{nbMonth}", method = [RequestMethod.GET])
+    fun tournamentEvents(@PathVariable("name") name : String, @PathVariable("nbMonth") nbMonth : Int): DeferredResult<ResponseEntity<*>> {
+        val output = DeferredResult<ResponseEntity<*>>()
+        val day = PeriodMatch(name, nbMonth)
+        day.getDayMatchs(object: CallBackManager {
+            override fun onResponse(pError: String?) {
+                if(pError != null){
+                    output.setResult(ResponseEntity.ok(pError))
+                }
+                else{
+                    output.setResult(ResponseEntity.ok(day.displayPeriodMatchs()))
                 }
 
             }
