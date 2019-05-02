@@ -4,6 +4,7 @@ import com.baudoin.sofascore.network.entity.event.EventsResponse
 import com.baudoin.sofascore.network.HttpUtils
 import com.baudoin.sofascore.network.entity.event.EventDetailsResponse
 import com.baudoin.sofascore.network.entity.event.EventResponse
+import com.baudoin.sofascore.network.entity.event.SportItemResponse
 import com.baudoin.sofascore.network.entity.lineup.MatchLineupResponse
 import com.baudoin.sofascore.network.entity.player.TransfertResponse
 import com.baudoin.sofascore.network.manager.base.BaseNetworkManager
@@ -68,6 +69,21 @@ object FootballNetworkManager: BaseNetworkManager() {
                 val playerTransfert = checkOnResponseError(call, response, pCallBack) ?: return
 
                 pCallBack.onSuccess(playerTransfert)
+            }
+
+        })
+    }
+
+    fun getPlayerEvents(pPlayerID: String, pCallBack: CallBackManagerWithError<SportItemResponse>){
+        HttpUtils.footballNetworkManager.getPlayerEvents(pPlayerID).enqueue(object: Callback<SportItemResponse>{
+            override fun onFailure(call: Call<SportItemResponse>, t: Throwable) {
+                pCallBack.onError(t.message.toString())
+            }
+
+            override fun onResponse(call: Call<SportItemResponse>, response: Response<SportItemResponse>) {
+                val sportItemResponse = checkOnResponseError(call, response, pCallBack) ?: return
+
+                pCallBack.onSuccess(sportItemResponse)
             }
 
         })
