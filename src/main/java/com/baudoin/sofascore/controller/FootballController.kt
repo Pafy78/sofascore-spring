@@ -50,10 +50,10 @@ class FootballController {
         return output
     }
 
-    @RequestMapping("/event/tournament/{name}/period/{nbMonth}", method = [RequestMethod.GET])
-    fun tournamentEvents(@PathVariable("name") name : String, @PathVariable("nbMonth") nbMonth : Int): DeferredResult<ResponseEntity<*>> {
+    @RequestMapping("/event/tournament/{name}/period/{nbDays}", method = [RequestMethod.GET])
+    fun tournamentEvents(@PathVariable("name") name : String, @PathVariable("nbDays") nbDays : Int): DeferredResult<ResponseEntity<*>> {
         val output = DeferredResult<ResponseEntity<*>>()
-        val day = PeriodMatch(name, nbMonth)
+        val day = PeriodMatch(name, nbDays)
         day.getDayMatchs(object: CallBackManager {
             override fun onResponse(pError: String?) {
                 if(pError != null){
@@ -61,6 +61,25 @@ class FootballController {
                 }
                 else{
                     output.setResult(ResponseEntity.ok(day.displayPeriodMatchs()))
+                }
+
+            }
+
+        })
+        return output
+    }
+
+    @RequestMapping("/event/season/tournament/{name}/period/{nbDays}", method = [RequestMethod.GET])
+    fun tournamentSeasonEvents(@PathVariable("name") name : String, @PathVariable("nbDays") nbDays : Int): DeferredResult<ResponseEntity<*>> {
+        val output = DeferredResult<ResponseEntity<*>>()
+        val day = PeriodMatch(name, nbDays)
+        day.getSeasonMatchs(object: CallBackManager {
+            override fun onResponse(pError: String?) {
+                if(pError != null){
+                    output.setResult(ResponseEntity.ok(pError))
+                }
+                else{
+                    output.setResult(ResponseEntity.ok(day.displayMatchs()))
                 }
 
             }

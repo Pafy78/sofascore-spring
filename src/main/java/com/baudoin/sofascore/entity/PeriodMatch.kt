@@ -1,17 +1,28 @@
 package com.baudoin.sofascore.entity
 
+import com.baudoin.sofascore.network.HttpUtils
+import com.baudoin.sofascore.network.entity.event.EventsResponse
+import com.baudoin.sofascore.network.entity.event.TournamentEventsResponse
+import com.baudoin.sofascore.network.manager.FootballNetworkManager
 import com.baudoin.sofascore.network.manager.base.CallBackManager
+import com.baudoin.sofascore.network.manager.base.CallBackManagerWithError
+import java.security.Timestamp
+import java.text.SimpleDateFormat
+import java.time.Instant
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
-class PeriodMatch(val tournamentName: String, val periodInMonth: Int) {
+class PeriodMatch(val tournamentName: String, val periodInDay: Int) {
 
     var dayMatchs: List<DayMatch> = emptyList()
+    var matchs: List<Match> = emptyList()
 
     fun getDayMatchs(pCallBack: CallBackManager){
         val now = LocalDate.now()
-        var day = now.plusMonths(- this.periodInMonth.toLong())
+        var day = now.plusDays(- this.periodInDay.toLong())
         var loading = false
-        while (day < now) {
+        while (day <= now) {
             if(!loading){
                 loading = true
                 val dayMatch = DayMatch(day.toString(), this.tournamentName)
@@ -19,6 +30,7 @@ class PeriodMatch(val tournamentName: String, val periodInMonth: Int) {
                     override fun onResponse(pError: String?) {
                         this@PeriodMatch.dayMatchs += dayMatch
                         day = day.plusDays(1)
+                        println(day)
                         loading = false
                     }
                 })
@@ -27,11 +39,95 @@ class PeriodMatch(val tournamentName: String, val periodInMonth: Int) {
         pCallBack.onResponse(null)
     }
 
-    fun displayPeriodMatchs(): String{
+    fun getSeasonMatchs(pCallBack: CallBackManager){
+        HttpUtils.setNetworkManagerInterfaces()
+        FootballNetworkManager.getEvents(LocalDate.now().toString(), object: CallBackManagerWithError<EventsResponse>{
+            override fun onSuccess(response: EventsResponse) {
+                val tournamentId = response.sportItem
+                        .tournaments
+                        .find { tournamentResponse ->
+                            tournamentResponse.tournament.name == this@PeriodMatch.tournamentName }
+                        ?.tournament
+                        ?.uniqueId
+                val seasonId =response.sportItem
+                        .tournaments
+                        .find { tournamentResponse ->
+                            tournamentResponse.tournament.name == this@PeriodMatch.tournamentName }
+                        ?.season
+                        ?.id
+                if(tournamentId == null || seasonId == null){
+                    pCallBack.onResponse("Tournament not found")
+                    return
+                }
+                //val endTime = SimpleDateFormat("dd-MM-yyyy").parse(LocalDateTime.now().toString()).time
+                //val startTime = SimpleDateFormat("dd-MM-yyyy").parse(LocalDateTime.now().plusDays(- this@PeriodMatch.periodInDay.toLong()).toString()).time
+                val endTime = Instant.now().epochSecond
+
+                val startTime = Instant.now().plus(- this@PeriodMatch.periodInDay.toLong(), ChronoUnit.DAYS).epochSecond
+                FootballNetworkManager.getTournamentEvents(
+                        tournamentId,
+                        seasonId,
+                        startTime,
+                        endTime,
+                        object: CallBackManagerWithError<TournamentEventsResponse>{
+                            override fun onSuccess(response: TournamentEventsResponse) {
+                                var count = 0
+                                response.weekMatches.tournaments.first().events.forEachIndexed { index, eventResponse ->
+                                    if(eventResponse.id != null){
+                                        val match = Match(eventResponse.id.toString())
+                                        match.getMatch(object: CallBackManager{
+                                            override fun onResponse(pError: String?) {
+                                                this@PeriodMatch.matchs += match
+                                                count ++
+                                                if(count == response.weekMatches.tournaments.first().events.count()){
+                                                    pCallBack.onResponse(null)
+                                                }
+                                            }
+                                        })
+                                    }
+                                }
+                            }
+                            override fun onError(pError: String) {
+                                pCallBack.onResponse(pError)
+                            }
+                        })
+            }
+            override fun onError(pError: String) {
+                pCallBack.onResponse(pError)
+            }
+        })
+    }
+
+    fun displayPeriodMatchs(): String?{
+        if(this.dayMatchs.isEmpty()){
+            return null
+        }
         var string = ""
         this.dayMatchs.forEachIndexed { index, dayMatch ->
-            string += dayMatch.displayMatchs() + "<br/>"
+            if(dayMatch.displayMatchs() != null){
+                string += dayMatch.displayMatchs() + "<br/>"
+            }
         }
         return string
+    }
+
+    fun displayMatchs(): String?{
+        if(this.matchs.isEmpty()){
+            return null
+        }
+        var string = ""
+        this.matchs.forEachIndexed { index, match ->
+            if(match.displayTeamValues() != null){
+                string += "${match.displayTeamValues()}<br/><br/>"
+            }
+        }
+        return string
+    }
+
+    fun alreadyHasMatch(id: Int?): Boolean {
+        return this.dayMatchs.find {  dayMatch ->
+            dayMatch.matchs.find { match ->
+                match.pId.toInt() == id } != null
+        } != null
     }
 }

@@ -6,4 +6,5 @@ class TournamentResponse {
 
     lateinit var tournament: TournamentObjectResponse
     lateinit var events: List<EventResponse>
+    lateinit var season: Season
 }

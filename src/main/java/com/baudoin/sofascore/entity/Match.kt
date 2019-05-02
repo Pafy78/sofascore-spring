@@ -13,6 +13,8 @@ class Match(val pId: String) {
 
     var homeTeam: Team = Team()
     var awayTeam: Team = Team()
+    var homeOdd: Int? = null
+    var awayOdd: Int? = null
 
     fun getMatch(pCallBack: CallBackManager){
         HttpUtils.setNetworkManagerInterfaces()
@@ -20,6 +22,8 @@ class Match(val pId: String) {
             override fun onSuccess(response: EventDetailsResponse) {
                 this@Match.homeTeam.name = response.event.homeTeam.name.toString()
                 this@Match.awayTeam.name = response.event.awayTeam.name.toString()
+                this@Match.homeOdd = response.winningOdds?.home?.expected
+                this@Match.awayOdd = response.winningOdds?.away?.expected
                 setLineups(object: CallBackManager{
                     override fun onResponse(pError: String?) {
                         pCallBack.onResponse(pError)
@@ -45,7 +49,15 @@ class Match(val pId: String) {
         val stringHome = "${this.homeTeam.name} : $percentHome%"
         val stringNull = " - NULL : $halfPercentNull% - "
         val stringAway = "${this.awayTeam.name} : $percentAway%"
-        return "$stringHome$stringNull$stringAway"
+        val stringOdd = "<br/>${this.homeOdd} - ${this.getNullOdd()} - ${this.awayOdd}<br/>"
+        return "$stringHome$stringNull$stringAway$stringOdd"
+    }
+
+    private fun getNullOdd(): Int{
+        if(this.homeOdd == null || this.awayOdd == null){
+            return 0
+        }
+        return 100 - this.homeOdd!! - this.awayOdd!!
     }
 
     private fun setLineups(pCallBack: CallBackManager){
