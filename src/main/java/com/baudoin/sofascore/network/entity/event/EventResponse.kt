@@ -14,4 +14,5 @@ class EventResponse {
     lateinit var homeScore: ScoreResponse
     lateinit var awayScore: ScoreResponse
     lateinit var status: StatusResponse
+    lateinit var playerMatchInfo : PlayerMatchInfoResponse
 }

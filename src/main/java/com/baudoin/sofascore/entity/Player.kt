@@ -1,6 +1,7 @@
 package com.baudoin.sofascore.entity
 
 import com.baudoin.sofascore.network.entity.common.PlayerResponse
+import com.baudoin.sofascore.network.entity.event.SportItemResponse
 import com.baudoin.sofascore.network.entity.player.TransfertResponse
 import com.baudoin.sofascore.network.manager.FootballNetworkManager
 import com.baudoin.sofascore.network.manager.base.CallBackManager
@@ -11,6 +12,7 @@ class Player {
     var id : Int? = null
     var name: String?
     var value: Int? = null
+    var rating: Float = 0.0f
 
     constructor(player: PlayerResponse?){
         this.id = player?.id
@@ -21,7 +23,27 @@ class Player {
         FootballNetworkManager.getPlayerTransfert(this.id.toString(), object: CallBackManagerWithError<TransfertResponse> {
             override fun onSuccess(response: TransfertResponse) {
                 this@Player.value = valueStringToInt(response.playerValue)
-                pCallBack.onResponse(null)
+                FootballNetworkManager.getPlayerEvents(this@Player.id.toString(), object: CallBackManagerWithError<SportItemResponse> {
+                    override fun onSuccess(response: SportItemResponse) {
+                        var countRating = 0f
+                        var countMath = 0
+                        response.tournaments.forEachIndexed { index, tournamentResponse ->
+                            tournamentResponse.events.forEachIndexed { index, eventResponse ->
+                                if(eventResponse.playerMatchInfo.getRating() != null){
+                                    countRating += eventResponse.playerMatchInfo.getRating()?:0f
+                                    countMath ++
+                                }
+                            }
+                        }
+                        this@Player.rating = countRating / countMath
+                        pCallBack.onResponse(null)
+                    }
+
+                    override fun onError(pError: String) {
+                        pCallBack.onResponse(pError)
+                    }
+
+                })
             }
 
             override fun onError(pError: String) {
