@@ -70,13 +70,17 @@ class PeriodMatch(val tournamentName: String, val periodInDay: Int) {
                         object: CallBackManagerWithError<TournamentEventsResponse>{
                             override fun onSuccess(response: TournamentEventsResponse) {
                                 var count = 0
+                                var loading = false
                                 response.weekMatches.tournaments.first().events.forEachIndexed { index, eventResponse ->
                                     if(eventResponse.id != null && eventResponse.status.code == 100){
                                         val match = Match(eventResponse.id.toString())
+                                        while(loading){}
+                                        loading = true
                                         match.getMatch(object: CallBackManager{
                                             override fun onResponse(pError: String?) {
                                                 this@PeriodMatch.matchs += match
                                                 count ++
+                                                loading = false
                                                 if(count == response.weekMatches.tournaments.first().events.count()){
                                                     pCallBack.onResponse(null)
                                                 }
