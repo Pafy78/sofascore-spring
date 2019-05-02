@@ -12,11 +12,16 @@ class Team {
 
     fun setPlayers(lineup: LineupResponse?, pCallBack: CallBackManager) {
         this.players = emptyList()
+        if(lineup?.lineupsSorted?.count() == 0){
+            pCallBack.onResponse("No lineups")
+            return
+        }
         var i = 0
         while (i < this.teamCount)
         {
             if(!this.loading){
                 this.loading = true
+
                 val playerLineupResponse = lineup?.lineupsSorted?.get(i)
                 val player = Player(playerLineupResponse?.player)
                 player.setValue(object : CallBackManager {

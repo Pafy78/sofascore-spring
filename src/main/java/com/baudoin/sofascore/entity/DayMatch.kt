@@ -7,7 +7,7 @@ import com.baudoin.sofascore.network.manager.FootballNetworkManager
 import com.baudoin.sofascore.network.manager.base.CallBackManager
 import com.baudoin.sofascore.network.manager.base.CallBackManagerWithError
 
-class DayMatch(val date: String, val tournamentPosition: Int) {
+class DayMatch(val date: String, val tournamentName: String) {
 
     var matchs : List<Match> = emptyList()
 
@@ -15,8 +15,17 @@ class DayMatch(val date: String, val tournamentPosition: Int) {
         HttpUtils.setNetworkManagerInterfaces()
         FootballNetworkManager.getEvents(this.date, object: CallBackManagerWithError<EventsResponse> {
             override fun onSuccess(response: EventsResponse) {
-                setSetMatchs(response.sportItem.tournaments.get(this@DayMatch.tournamentPosition).events, object: CallBackManager{
+                val tournament = response.sportItem.tournaments.find { tournamentResponse -> tournamentResponse.tournament.name == this@DayMatch.tournamentName }
+                if(tournament == null){
+                    pCallBack.onResponse("Tournament not found")
+                    return
+                }
+                setSetMatchs(tournament.events, object: CallBackManager{
                     override fun onResponse(pError: String?) {
+                        if(pError != null){
+                            pCallBack.onResponse(pError)
+                            return
+                        }
                         pCallBack.onResponse(null)
                     }
 
