@@ -31,11 +31,40 @@ class Team {
         pCallBack.onResponse(null)
     }
 
-    fun getAvgValuePlayer(): Int{
-        var number = 0
+    fun getAvgValuePlayer(): Float{
+        var number = 0f
+        val maxRating = getMaxRatingPlayer()
+        val minRating = getMinRatingPlayer()
         this.players.forEachIndexed { index, player ->
-            number += player.value?:0
+            number += (player.value?:0) * getPlayerTeamRatingPourcent(maxRating, minRating, player.rating)
         }
         return number / this.teamCount
+    }
+
+    private fun getPlayerTeamRatingPourcent(pMaxRating : Float, pMinRating: Float, pPlayerRating: Float): Float{
+        val multiplicator = 100 / (pMaxRating - pMinRating)
+        val playerRatingInRange = pPlayerRating - pMinRating
+        val value = (playerRatingInRange * multiplicator) / 100
+        return value
+    }
+
+    private fun getMaxRatingPlayer(): Float {
+        var maxRating = 0f
+        this.players.forEachIndexed { index, player ->
+            if(player.rating > maxRating){
+                maxRating = player.rating
+            }
+        }
+        return maxRating
+    }
+
+    private fun getMinRatingPlayer(): Float {
+        var minRating = 10f
+        this.players.forEachIndexed { index, player ->
+            if(player.rating < minRating){
+                minRating = player.rating
+            }
+        }
+        return minRating
     }
 }

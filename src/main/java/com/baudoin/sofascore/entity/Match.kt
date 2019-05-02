@@ -7,6 +7,7 @@ import com.baudoin.sofascore.network.entity.lineup.MatchLineupResponse
 import com.baudoin.sofascore.network.manager.FootballNetworkManager
 import com.baudoin.sofascore.network.manager.base.CallBackManager
 import com.baudoin.sofascore.network.manager.base.CallBackManagerWithError
+import java.lang.Float.min
 
 class Match(val pId: String) {
 
@@ -35,11 +36,16 @@ class Match(val pId: String) {
 
     fun displayTeamValues(): String{
         val totalValue = this.homeTeam.getAvgValuePlayer() + this.awayTeam.getAvgValuePlayer()
-        val percentHome = (this.homeTeam.getAvgValuePlayer() * 100.0f) / totalValue
-        val percentAway = (this.awayTeam.getAvgValuePlayer() * 100.0f) / totalValue
-        val stringHome = "${this.homeTeam.name} : $percentHome %"
-        val stringAway = "${this.awayTeam.name} : $percentAway %"
-        return "$stringHome\n$stringAway"
+        var percentHome = (this.homeTeam.getAvgValuePlayer() * 100.0f) / totalValue
+        var percentAway = (this.awayTeam.getAvgValuePlayer() * 100.0f) / totalValue
+        var halfPercentNull = min(percentAway, percentHome) * 0.33
+        percentHome -= halfPercentNull.toFloat()
+        percentAway -= halfPercentNull.toFloat()
+        halfPercentNull *= 2
+        val stringHome = "${this.homeTeam.name} : $percentHome%"
+        val stringNull = " - NULL : $halfPercentNull% - "
+        val stringAway = "${this.awayTeam.name} : $percentAway%"
+        return "$stringHome$stringNull$stringAway"
     }
 
     private fun setLineups(pCallBack: CallBackManager){
