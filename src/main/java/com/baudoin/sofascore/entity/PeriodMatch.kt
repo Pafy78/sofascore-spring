@@ -59,7 +59,7 @@ class PeriodMatch(val tournamentName: String, val periodInDay: Int) {
                     pCallBack.onResponse("Tournament not found")
                     return
                 }
-                val endTime = Instant.now().epochSecond
+                val endTime = Instant.now().plus(1, ChronoUnit.DAYS).epochSecond
                 val startTime = Instant.now().plus(- this@PeriodMatch.periodInDay.toLong(), ChronoUnit.DAYS).epochSecond
 
                 FootballNetworkManager.getTournamentEvents(
@@ -72,7 +72,7 @@ class PeriodMatch(val tournamentName: String, val periodInDay: Int) {
                                 var count = 0
                                 var loading = false
                                 response.weekMatches.tournaments.first().events.forEachIndexed { index, eventResponse ->
-                                    if(eventResponse.id != null && eventResponse.status.code == 100){
+                                    if(eventResponse.id != null){
                                         val match = Match(eventResponse.id.toString())
                                         while(loading){}
                                         loading = true
