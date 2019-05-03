@@ -6,11 +6,8 @@ import com.baudoin.sofascore.network.entity.event.TournamentEventsResponse
 import com.baudoin.sofascore.network.manager.FootballNetworkManager
 import com.baudoin.sofascore.network.manager.base.CallBackManager
 import com.baudoin.sofascore.network.manager.base.CallBackManagerWithError
-import java.security.Timestamp
-import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 class PeriodMatch(val tournamentName: String, val periodInDay: Int) {

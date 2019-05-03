@@ -2,6 +2,8 @@ package com.baudoin.sofascore.entity
 
 import com.baudoin.sofascore.network.entity.lineup.LineupResponse
 import com.baudoin.sofascore.network.manager.base.CallBackManager
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 
 class Team {
 
@@ -16,23 +18,32 @@ class Team {
             pCallBack.onResponse("No lineups")
             return
         }
+
+        val lineupWithtoutSubsitute = lineup?.lineupsSorted?.filterIndexed { index, playerLineupResponse ->
+            playerLineupResponse.substitute == false
+        }
+
         var i = 0
-        while (i < this.teamCount)
+        while (i < lineupWithtoutSubsitute?.count()?:this.teamCount)
         {
             if(!this.loading){
                 this.loading = true
 
-                val player = Player(lineup?.lineupsSorted?.get(i)?.player)
+                val player = Player(lineupWithtoutSubsitute?.get(i)?.player)
                 player.setValue(object : CallBackManager {
                     override fun onResponse(pError: String?) {
-                        this@Team.players += player
-                        i++
+                        if(this@Team.players.find { p -> p.id == player.id } == null){
+                            this@Team.players += player
+                            i++
+                            if(i == lineupWithtoutSubsitute?.count()?:this@Team.teamCount){
+                                pCallBack.onResponse(null)
+                            }
+                        }
                         this@Team.loading = false
                     }
                 })
             }
         }
-        pCallBack.onResponse(null)
     }
 
     fun getAvgValuePlayer(): Float{
@@ -42,7 +53,7 @@ class Team {
         this.players.forEachIndexed { index, player ->
             number += (player.value?:0) * getPlayerTeamRatingPourcent(maxRating, minRating, player.rating)
         }
-        return number / this.teamCount
+        return number / this.players.count()
     }
 
     private fun getPlayerTeamRatingPourcent(pMaxRating : Float, pMinRating: Float, pPlayerRating: Float): Float{
