@@ -75,6 +75,9 @@ class PeriodMatch(val tournamentName: String, val periodInDay: Int) {
                                         loading = true
                                         match.getMatch(object: CallBackManager{
                                             override fun onResponse(pError: String?) {
+                                                if(pError != null){
+                                                    println(pError)
+                                                }
                                                 this@PeriodMatch.matchs += match
                                                 count ++
                                                 loading = false

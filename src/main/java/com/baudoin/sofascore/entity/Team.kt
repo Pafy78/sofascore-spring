@@ -2,8 +2,6 @@ package com.baudoin.sofascore.entity
 
 import com.baudoin.sofascore.network.entity.lineup.LineupResponse
 import com.baudoin.sofascore.network.manager.base.CallBackManager
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 
 class Team {
 
@@ -46,7 +44,7 @@ class Team {
         }
     }
 
-    fun getAvgValuePlayer(): Float{
+    fun getPlayersValueInTeam(): Float{
         var number = 0f
         val maxRating = getMaxRatingPlayer()
         val minRating = getMinRatingPlayer()
@@ -56,11 +54,23 @@ class Team {
         return number / this.players.count()
     }
 
+    fun getTeamValue(): Float {
+        return getPlayersValueInTeam() * getPlayersRatingAvg()
+    }
+
     private fun getPlayerTeamRatingPourcent(pMaxRating : Float, pMinRating: Float, pPlayerRating: Float): Float{
         val multiplicator = 100 / (pMaxRating - pMinRating)
         val playerRatingInRange = pPlayerRating - pMinRating
         val value = (playerRatingInRange * multiplicator) / 100
         return value
+    }
+
+    private fun getPlayersRatingAvg(): Float {
+        var count = 0f
+        this.players.forEachIndexed { index, player ->
+            count += player.rating
+        }
+        return count / players.count()
     }
 
     private fun getMaxRatingPlayer(): Float {

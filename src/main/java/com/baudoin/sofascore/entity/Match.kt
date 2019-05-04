@@ -2,7 +2,6 @@ package com.baudoin.sofascore.entity
 
 import com.baudoin.sofascore.network.HttpUtils
 import com.baudoin.sofascore.network.entity.event.EventDetailsResponse
-import com.baudoin.sofascore.network.entity.event.EventResponse
 import com.baudoin.sofascore.network.entity.lineup.MatchLineupResponse
 import com.baudoin.sofascore.network.manager.FootballNetworkManager
 import com.baudoin.sofascore.network.manager.base.CallBackManager
@@ -39,9 +38,9 @@ class Match(val pId: String) {
     }
 
     fun displayTeamValues(): String{
-        val totalValue = this.homeTeam.getAvgValuePlayer() + this.awayTeam.getAvgValuePlayer()
-        var percentHome = (this.homeTeam.getAvgValuePlayer() * 100.0f) / totalValue
-        var percentAway = (this.awayTeam.getAvgValuePlayer() * 100.0f) / totalValue
+        val totalValue = this.homeTeam.getTeamValue() + this.awayTeam.getTeamValue()
+        var percentHome = (this.homeTeam.getTeamValue() * 100.0f) / totalValue
+        var percentAway = (this.awayTeam.getTeamValue() * 100.0f) / totalValue
         var halfPercentNull = min(percentAway, percentHome) * 0.33
         percentHome -= halfPercentNull.toFloat()
         percentAway -= halfPercentNull.toFloat()

@@ -26,7 +26,6 @@ class Player {
         FootballNetworkManager.getPlayerTransfert(this.id.toString(), object: CallBackManagerWithError<TransfertResponse> {
             override fun onSuccess(response: TransfertResponse) {
                 this@Player.value = valueStringToInt(response.playerValue)
-                pCallBack.onResponse("TEST")
                 FootballNetworkManager.getPlayerEvents(this@Player.id.toString(), object: CallBackManagerWithError<SportItemResponse> {
                     override fun onSuccess(response: SportItemResponse) {
                         var countRating = 0f
