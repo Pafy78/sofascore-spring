@@ -38,7 +38,8 @@ class PeriodMatch(val tournamentName: String, val periodInDay: Int) {
 
     fun getSeasonMatchs(pCallBack: CallBackManager){
         HttpUtils.setNetworkManagerInterfaces()
-        FootballNetworkManager.getEvents(LocalDate.now().toString(), object: CallBackManagerWithError<EventsResponse>{
+        val dayBeforeStart = 0
+        FootballNetworkManager.getEvents(LocalDate.now().plus((dayBeforeStart).toLong(), ChronoUnit.DAYS).toString(), object: CallBackManagerWithError<EventsResponse>{
             override fun onSuccess(response: EventsResponse) {
                 val tournamentId = response.sportItem
                         .tournaments
@@ -56,7 +57,8 @@ class PeriodMatch(val tournamentName: String, val periodInDay: Int) {
                     pCallBack.onResponse("Tournament not found")
                     return
                 }
-                val endTime = Instant.now().plus(1, ChronoUnit.DAYS).epochSecond
+                val plusDay = 1
+                val endTime = Instant.now().plus(plusDay.toLong(), ChronoUnit.DAYS).epochSecond
                 val startTime = Instant.now().plus(- this@PeriodMatch.periodInDay.toLong(), ChronoUnit.DAYS).epochSecond
 
                 FootballNetworkManager.getTournamentEvents(
@@ -68,27 +70,33 @@ class PeriodMatch(val tournamentName: String, val periodInDay: Int) {
                             override fun onSuccess(response: TournamentEventsResponse) {
                                 var count = 0
                                 var loading = false
-                                response.weekMatches.tournaments.first().events.forEachIndexed { index, eventResponse ->
-                                    if(eventResponse.id != null){
-                                        val match = Match(eventResponse.id.toString())
-                                        while(loading){}
-                                        loading = true
-                                        match.getMatch(object: CallBackManager{
-                                            override fun onResponse(pError: String?) {
-                                                if(pError != null){
-                                                    println(pError)
+                                var countFinal = 0
+                                response.weekMatches.tournaments.forEachIndexed { index, tournamentResponse ->
+                                    countFinal += tournamentResponse.events.count()
+                                }
+                                response.weekMatches.tournaments.forEachIndexed { index, tournamentResponse ->
+                                    tournamentResponse.events.forEachIndexed { index, eventResponse ->
+                                        if(eventResponse.id != null){
+                                            val match = Match(eventResponse.id.toString())
+                                            while(loading){}
+                                            loading = true
+                                            match.getMatch(object: CallBackManager{
+                                                override fun onResponse(pError: String?) {
+                                                    if(pError != null){
+                                                        println(pError)
+                                                    }
+                                                    this@PeriodMatch.matchs += match
+                                                    count ++
+                                                    loading = false
+                                                    if(count == countFinal){
+                                                        pCallBack.onResponse(null)
+                                                    }
                                                 }
-                                                this@PeriodMatch.matchs += match
-                                                count ++
-                                                loading = false
-                                                if(count == response.weekMatches.tournaments.first().events.count()){
-                                                    pCallBack.onResponse(null)
-                                                }
-                                            }
-                                        })
-                                    }
-                                    else{
-                                        count ++
+                                            })
+                                        }
+                                        else{
+                                            count ++
+                                        }
                                     }
                                 }
                             }

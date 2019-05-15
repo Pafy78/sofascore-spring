@@ -63,6 +63,9 @@ class Player {
         val millionValue = pValue.substringBefore("M €")
         if(millionValue == pValue){
             val value = pValue.substringBefore("k €")
+            if(value == pValue){
+                return 0
+            }
             return (value.toFloat() * 1000).toInt()
         }
         return (millionValue.toFloat() * 1000000).toInt()
