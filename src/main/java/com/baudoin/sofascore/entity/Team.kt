@@ -7,7 +7,7 @@ class Team {
 
     private val teamCount = 11
     lateinit var players: List<Player>
-    lateinit var name : String
+    var name : String = ""
     var loading: Boolean = false
 
     fun setPlayers(lineup: LineupResponse?, pCallBack: CallBackManager) {
@@ -45,6 +45,9 @@ class Team {
     }
 
     fun getPlayersValueInTeam(): Float{
+        if(!::players.isInitialized){
+            return 0f
+        }
         var number = 0f
         val maxRating = getMaxRatingPlayer()
         val minRating = getMinRatingPlayer()
@@ -55,6 +58,9 @@ class Team {
     }
 
     fun getTeamValue(): Float {
+        if(!::players.isInitialized){
+            return 0f
+        }
         return getPlayersValueInTeam() * getPlayersRatingAvg()
     }
 
