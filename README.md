@@ -14,5 +14,5 @@ The goal of this project will be to download the data from the website https://s
 
 # How to use
 - Go to Sofascore website and get the exact name of a Football tournament (ex: Ligue 1)
-- Open your brower with the url : http://localhost:8080/football/event/season/tournament/<Exact name of the tournament>/period/<Number of days from the current day you want to load>
-
+- Open your brower with the url : http://localhost:8080/football/event/tournament/"Exact name of the tournament"/period/"Number of days from the current day you want to load"
+- Loading the page could be long, be patient, and reload if you get an error
