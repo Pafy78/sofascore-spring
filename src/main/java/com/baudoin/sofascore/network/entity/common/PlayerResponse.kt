@@ -12,15 +12,17 @@ class PlayerResponse {
     var transfert: TransfertResponse? = null
 
     init {
-        FootballNetworkManager.getPlayerTransfert(this.id.toString(), object: CallBackManagerWithError<TransfertResponse>{
-            override fun onSuccess(response: TransfertResponse) {
-                this@PlayerResponse.transfert = response
-            }
+        if(this.id != null || false){ // block
+            FootballNetworkManager.getPlayerTransfert(this.id.toString(), object: CallBackManagerWithError<TransfertResponse>{
+                override fun onSuccess(response: TransfertResponse) {
+                    this@PlayerResponse.transfert = response
+                }
 
-            override fun onError(pError: String) {
+                override fun onError(pError: String) {
 
-            }
+                }
 
-        })
+            })
+        }
     }
 }

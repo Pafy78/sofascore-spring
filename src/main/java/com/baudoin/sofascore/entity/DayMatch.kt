@@ -7,20 +7,29 @@ import com.baudoin.sofascore.network.manager.FootballNetworkManager
 import com.baudoin.sofascore.network.manager.base.CallBackManager
 import com.baudoin.sofascore.network.manager.base.CallBackManagerWithError
 
-class DayMatch(val date: String, val tournamentPosition: Int) {
+class DayMatch(val date: String, val tournamentName: String) {
 
     var matchs : List<Match> = emptyList()
 
-    fun getMatchs(pCallBack: CallBackManager){
+    fun getMatchs(pCallBack: CallBackManager, pPeriodMatch: PeriodMatch? = null){
         HttpUtils.setNetworkManagerInterfaces()
         FootballNetworkManager.getEvents(this.date, object: CallBackManagerWithError<EventsResponse> {
             override fun onSuccess(response: EventsResponse) {
-                setSetMatchs(response.sportItem.tournaments.get(this@DayMatch.tournamentPosition).events, object: CallBackManager{
+                val tournament = response.sportItem.tournaments.find { tournamentResponse -> tournamentResponse.tournament.name == this@DayMatch.tournamentName }
+                if(tournament == null){
+                    pCallBack.onResponse("Tournament not found")
+                    return
+                }
+                setMatchs(tournament.events, object: CallBackManager{
                     override fun onResponse(pError: String?) {
+                        if(pError != null){
+                            pCallBack.onResponse(pError)
+                            return
+                        }
                         pCallBack.onResponse(null)
                     }
 
-                })
+                }, pPeriodMatch)
             }
 
             override fun onError(pError: String) {
@@ -30,7 +39,16 @@ class DayMatch(val date: String, val tournamentPosition: Int) {
         })
     }
 
-    private fun setSetMatchs(pListEventResponse: List<EventResponse>, pCallBack: CallBackManager){
+    private fun setMatchs(pListEventResponse: List<EventResponse>, pCallBack: CallBackManager, pPeriodMatch: PeriodMatch? = null){
+        if(pPeriodMatch != null){
+            if(pPeriodMatch.alreadyHasMatch(pListEventResponse.first().id)){
+                setMatchs(pListEventResponse.subList(1,pListEventResponse.count()), pCallBack)
+            }
+            if(pListEventResponse.count() == 0){
+                pCallBack.onResponse(null)
+                return
+            }
+        }
         val match = Match(pListEventResponse.first().id.toString())
         match.getMatch(object: CallBackManager{
             override fun onResponse(pError: String?) {
@@ -42,15 +60,20 @@ class DayMatch(val date: String, val tournamentPosition: Int) {
                     pCallBack.onResponse(null)
                     return
                 }
-                setSetMatchs(pListEventResponse.subList(1,pListEventResponse.count()), pCallBack)
+                setMatchs(pListEventResponse.subList(1,pListEventResponse.count()), pCallBack)
             }
         })
     }
 
-    fun displayMatchs(): String{
+    fun displayMatchs(): String?{
+        if(this.matchs.isEmpty()){
+            return null
+        }
         var string = ""
         this.matchs.forEachIndexed { index, match ->
-            string += "${match.displayTeamValues()}<br/><br/>"
+            if(!match.displayTeamValues().isEmpty()){
+                string += "${match.displayTeamValues()}<br/><br/>"
+            }
         }
         return string
     }

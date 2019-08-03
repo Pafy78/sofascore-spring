@@ -1,10 +1,7 @@
 package com.baudoin.sofascore.network.manager
 
-import com.baudoin.sofascore.network.entity.event.EventsResponse
 import com.baudoin.sofascore.network.HttpUtils
-import com.baudoin.sofascore.network.entity.event.EventDetailsResponse
-import com.baudoin.sofascore.network.entity.event.EventResponse
-import com.baudoin.sofascore.network.entity.event.SportItemResponse
+import com.baudoin.sofascore.network.entity.event.*
 import com.baudoin.sofascore.network.entity.lineup.MatchLineupResponse
 import com.baudoin.sofascore.network.entity.player.TransfertResponse
 import com.baudoin.sofascore.network.manager.base.BaseNetworkManager
@@ -84,6 +81,21 @@ object FootballNetworkManager: BaseNetworkManager() {
                 val sportItemResponse = checkOnResponseError(call, response, pCallBack) ?: return
 
                 pCallBack.onSuccess(sportItemResponse)
+            }
+
+        })
+    }
+
+    fun getTournamentEvents(pTournamentId: Int, pSeasonId: Int, pTimeStart: Long, pTimeEnd: Long, pCallBack: CallBackManagerWithError<TournamentEventsResponse>){
+        HttpUtils.footballNetworkManager.getTournamentEvents(pTournamentId, pSeasonId, pTimeStart, pTimeEnd).enqueue(object: Callback<TournamentEventsResponse>{
+            override fun onFailure(call: Call<TournamentEventsResponse>, t: Throwable) {
+                pCallBack.onError(t.message.toString())
+            }
+
+            override fun onResponse(call: Call<TournamentEventsResponse>, response: Response<TournamentEventsResponse>) {
+                val tournamentEventsResponse = checkOnResponseError(call, response, pCallBack) ?: return
+
+                pCallBack.onSuccess(tournamentEventsResponse)
             }
 
         })

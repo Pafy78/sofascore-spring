@@ -20,6 +20,9 @@ class Player {
     }
 
     fun setValue(pCallBack: CallBackManager){
+        if(this.id == null){
+            pCallBack.onResponse("ID player is null")
+        }
         FootballNetworkManager.getPlayerTransfert(this.id.toString(), object: CallBackManagerWithError<TransfertResponse> {
             override fun onSuccess(response: TransfertResponse) {
                 this@Player.value = valueStringToInt(response.playerValue)
@@ -60,6 +63,9 @@ class Player {
         val millionValue = pValue.substringBefore("M €")
         if(millionValue == pValue){
             val value = pValue.substringBefore("k €")
+            if(value == pValue){
+                return 0
+            }
             return (value.toFloat() * 1000).toInt()
         }
         return (millionValue.toFloat() * 1000000).toInt()
